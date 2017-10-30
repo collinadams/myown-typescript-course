@@ -16,8 +16,10 @@ export class App extends React.Component<{}, IAppState> {
       term: '',
       inProgress: false
     };
+    this.trySearch = this.trySearch.bind(this);    
   }
-  async trySearch(search: string) {
+  async trySearch(evt: React.ChangeEvent<HTMLInputElement>) {
+    let search = evt.target.value;
     this.setState({ inProgress: true, term: search });
     let placeSummaries: PlaceSummary[] = await fetchPlaceSummaries(search);
     let results: PlaceDetails[] = await fetchPlaceDetails(placeSummaries.map(p => p.place_id));
@@ -26,7 +28,10 @@ export class App extends React.Component<{}, IAppState> {
   render() {
     console.log(this.state.results);
     return (
-      <PlaceSearchResultList />
+      <div>
+        <input onChange={this.trySearch} />
+        <PlaceSearchResultList {...this.state} />
+      </div>
     );
   }
 };
